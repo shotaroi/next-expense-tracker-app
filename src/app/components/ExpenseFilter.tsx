@@ -3,6 +3,7 @@ interface ExpenseFilterProps {
   setFilterCategory: (val: string) => void;
   filterDate: string;
   setFilterDate: (val: string) => void;
+  onClear: () => void;
 }
 
 export default function ExpenseFilter({
@@ -10,6 +11,7 @@ export default function ExpenseFilter({
   setFilterCategory,
   filterDate,
   setFilterDate,
+  onClear,
 }: ExpenseFilterProps) {
   return (
     <div className="space-y-2 border-t pt-4 mt-4">
@@ -27,6 +29,12 @@ export default function ExpenseFilter({
         onChange={(e) => setFilterDate(e.target.value)}
         className="border rounded px-2 py-1 w-1/2"
       />
+      <button
+      onClick={onClear}
+      className="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400"
+      >
+        Clear
+      </button>
     </div>
   );
 }

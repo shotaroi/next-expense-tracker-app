@@ -44,6 +44,11 @@ export default function HomePage() {
     return matchesCategory && matchesDate;
   });
 
+  const clearFilters = () => {
+    setFilterCategory("");
+    setFilterDate("");
+  }
+
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4">
       <h1 className="text-2xl font-bold">Expense Tracker</h1>
@@ -53,6 +58,7 @@ export default function HomePage() {
         setFilterCategory={setFilterCategory}
         filterDate={filterDate}
         setFilterDate={setFilterDate}
+        onClear={clearFilters}
       />
       {/* <ExpenseChart></ExpenseChart> */}
       <ExpenseList expenses={filteredExpenses} onDelete={deleteExpense} />
