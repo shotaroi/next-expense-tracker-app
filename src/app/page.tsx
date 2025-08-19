@@ -54,6 +54,7 @@ export default function HomePage() {
       <h1 className="text-2xl font-bold">Expense Tracker</h1>
       <ExpenseForm onAdd={addExpense} />
       <ExpenseFilter
+      categories={["Video", "Music", "Animal"]}
         filterCategory={filterCategory}
         setFilterCategory={setFilterCategory}
         filterDate={filterDate}

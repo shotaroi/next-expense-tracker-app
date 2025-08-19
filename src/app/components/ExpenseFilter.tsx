@@ -1,4 +1,7 @@
+import { option } from "framer-motion/client";
+
 interface ExpenseFilterProps {
+    categories: string[];
   filterCategory: string;
   setFilterCategory: (val: string) => void;
   filterDate: string;
@@ -7,6 +10,7 @@ interface ExpenseFilterProps {
 }
 
 export default function ExpenseFilter({
+    categories,
   filterCategory,
   setFilterCategory,
   filterDate,
@@ -14,15 +18,15 @@ export default function ExpenseFilter({
   onClear,
 }: ExpenseFilterProps) {
   return (
-    <div className="space-y-2 border-t pt-4 mt-4">
-      <h2 className="font-bold">Filter Expenses</h2>
-      <input
-        type="text"
-        placeholder="Filter by category"
-        value={filterCategory}
-        onChange={(e) => setFilterCategory(e.target.value)}
-        className="w-1/2 border rounded px-2 py-1"
-      />
+    <div className="flex gap-2 space-y-2 border-t pt-4 items-center">
+      <select value={filterCategory}
+      onChange={(e) => setFilterCategory(e.target.value)}
+      className="border rounded px-2 py-1">
+        <option value="">All Categories</option>
+        {categories.map((cat) => (
+            <option key={cat}>{cat}</option>
+        ))}
+      </select>
       <input
         type="date"
         value={filterDate}
