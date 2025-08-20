@@ -1,3 +1,4 @@
+import { option } from "framer-motion/client";
 import { useState } from "react";
 
 interface ExpenseFormProps {
@@ -7,9 +8,10 @@ interface ExpenseFormProps {
     category: string,
     date: string
   ) => void;
+  categories: string[];
 }
 
-export default function ExpenseForm({ onAdd }: ExpenseFormProps) {
+export default function ExpenseForm({ onAdd, categories }: ExpenseFormProps) {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
@@ -46,13 +48,14 @@ export default function ExpenseForm({ onAdd }: ExpenseFormProps) {
         onChange={(e) => setAmount(e.target.value)}
         className="border rounded px-2 py-1"
       />
-      <input
-        type="text"
-        placeholder="Category"
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        className="border rounded px-2 py-1"
-      />
+      <select value={category} onChange={(e) => setCategory(e.target.value)}>
+        <option value="">
+            Select Category
+        </option>
+        {categories.map((cat) => (
+            <option key={cat} value={cat}>{cat}</option>
+        ))}
+      </select>
       <input
         type="date"
         value={date}
@@ -60,8 +63,12 @@ export default function ExpenseForm({ onAdd }: ExpenseFormProps) {
         className="border rounded px-2 py-1"
       />
 
-      <button type="submit"
-      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded col-span-full sm:col-span-1">Add</button>
+      <button
+        type="submit"
+        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded col-span-full sm:col-span-1"
+      >
+        Add
+      </button>
     </form>
   );
 }

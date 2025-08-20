@@ -12,6 +12,7 @@ export default function HomePage() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [filterCategory, setFilterCategory] = useState("");
   const [filterDate, setFilterDate] = useState("");
+  const categories = ["Music", "Movie", "Animal"];
 
   useEffect(() => {
     const stored = localStorage.getItem("expenses");
@@ -52,9 +53,9 @@ export default function HomePage() {
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4">
       <h1 className="text-2xl font-bold">Expense Tracker</h1>
-      <ExpenseForm onAdd={addExpense} />
+      <ExpenseForm onAdd={addExpense} categories={categories}/>
       <ExpenseFilter
-      categories={["Video", "Music", "Animal"]}
+      categories={categories}
         filterCategory={filterCategory}
         setFilterCategory={setFilterCategory}
         filterDate={filterDate}
