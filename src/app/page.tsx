@@ -12,6 +12,7 @@ export default function HomePage() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [filterCategory, setFilterCategory] = useState("");
   const [filterDate, setFilterDate] = useState("");
+  const [sortBy, setSortBy] = useState<"date" | "amount" | "">("");
   const categories = ["Music", "Movie", "Animal"];
 
   useEffect(() => {
@@ -37,17 +38,28 @@ export default function HomePage() {
     localStorage.setItem("expenses", JSON.stringify(updated));
   };
 
-  const filteredExpenses = expenses.filter((exp) => {
-    const matchesCategory = filterCategory
-      ? exp.category.toLowerCase().includes(filterCategory.toLowerCase())
-      : true;
-    const matchesDate = filterDate ? exp.date === filterDate : true;
-    return matchesCategory && matchesDate;
-  });
-
   const clearFilters = () => {
     setFilterCategory("");
     setFilterDate("");
+  }
+
+  let displayedExpenses = [...expenses];
+
+  if (filterCategory) {
+    displayedExpenses = displayedExpenses.filter((exp) => exp.category.toLowerCase().includes(filterCategory.toLowerCase()));
+  }
+
+  // The "new object" is just a temporary Date instance created for the comparison. It only checks if they fall on the same day.
+  if (filterDate) {
+    displayedExpenses = displayedExpenses.filter((exp) => new Date(exp.date).toLocaleDateString() === new Date(filterDate).toLocaleDateString());
+  }
+
+  if (sortBy === "date") {
+    displayedExpenses.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }
+
+  if (sortBy === "amount") {
+    displayedExpenses.sort((a, b) => b.amount - a.amount);
   }
 
   return (
@@ -62,8 +74,15 @@ export default function HomePage() {
         setFilterDate={setFilterDate}
         onClear={clearFilters}
       />
+      <div className="">
+        <select value={sortBy} onChange={(e) => setSortBy(e.target.value as "date" | "amount" | "")}>
+          <option value="">No Sort</option>
+          <option value="date">Sort by Date</option>
+          <option value="amount">Sort by Amount</option>
+        </select>
+      </div>
       {/* <ExpenseChart></ExpenseChart> */}
-      <ExpenseList expenses={filteredExpenses} onDelete={deleteExpense} />
+      <ExpenseList expenses={displayedExpenses} onDelete={deleteExpense} />
     </div>
   );
 }
