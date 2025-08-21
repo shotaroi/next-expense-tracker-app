@@ -4,8 +4,10 @@ interface ExpenseFilterProps {
     categories: string[];
   filterCategory: string;
   setFilterCategory: (val: string) => void;
-  filterDate: string;
-  setFilterDate: (val: string) => void;
+  startDate: string;
+  setStartDate: (date: string) => void;
+  endDate: string;
+  setEndDate: (date: string) => void;
   onClear: () => void;
 }
 
@@ -13,8 +15,10 @@ export default function ExpenseFilter({
     categories,
   filterCategory,
   setFilterCategory,
-  filterDate,
-  setFilterDate,
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
   onClear,
 }: ExpenseFilterProps) {
   return (
@@ -29,10 +33,17 @@ export default function ExpenseFilter({
       </select>
       <input
         type="date"
-        value={filterDate}
-        onChange={(e) => setFilterDate(e.target.value)}
+        value={startDate}
+        onChange={(e) => setStartDate(e.target.value)}
         className="border rounded px-2 py-1 w-1/2"
       />
+      <span className="self-center">to</span>
+      <input type="date" 
+      value={endDate}
+        onChange={(e) => setEndDate(e.target.value)}
+        className="border rounded px-2 py-1 w-1/2"
+      />
+
       <button
       onClick={onClear}
       className="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400"

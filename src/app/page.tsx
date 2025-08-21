@@ -7,11 +7,14 @@ import ExpenseChart from "./components/ExpenseChart";
 import ExpenseList from "./components/ExpenseList";
 import { Expense } from "./types/expense";
 import ExpenseFilter from "./components/ExpenseFilter";
+import { filterProps } from "framer-motion";
 
 export default function HomePage() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [filterCategory, setFilterCategory] = useState("");
-  const [filterDate, setFilterDate] = useState("");
+  // const [filterDate, setFilterDate] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [sortBy, setSortBy] = useState<"date" | "amount" | "">("");
   const categories = ["Music", "Movie", "Animal"];
 
@@ -40,7 +43,9 @@ export default function HomePage() {
 
   const clearFilters = () => {
     setFilterCategory("");
-    setFilterDate("");
+    setStartDate("");
+    setEndDate("");
+    setSortBy("");
   }
 
   let displayedExpenses = [...expenses];
@@ -50,8 +55,12 @@ export default function HomePage() {
   }
 
   // The "new object" is just a temporary Date instance created for the comparison. It only checks if they fall on the same day.
-  if (filterDate) {
-    displayedExpenses = displayedExpenses.filter((exp) => new Date(exp.date).toLocaleDateString() === new Date(filterDate).toLocaleDateString());
+  if (startDate) {
+    displayedExpenses = displayedExpenses.filter((exp) => new Date(exp.date) >= new Date(startDate));
+  };
+
+  if (endDate) {
+    displayedExpenses = displayedExpenses.filter((exp) => new Date(exp.date) <= new Date(endDate));
   }
 
   if (sortBy === "date") {
@@ -70,8 +79,10 @@ export default function HomePage() {
       categories={categories}
         filterCategory={filterCategory}
         setFilterCategory={setFilterCategory}
-        filterDate={filterDate}
-        setFilterDate={setFilterDate}
+        startDate={startDate}
+        setStartDate={setStartDate}
+        endDate={endDate}
+        setEndDate={setEndDate}
         onClear={clearFilters}
       />
       <div className="">
