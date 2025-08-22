@@ -1,5 +1,3 @@
-import { option } from "framer-motion/client";
-
 interface ExpenseFilterProps {
     categories: string[];
   filterCategory: string;

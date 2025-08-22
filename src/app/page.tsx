@@ -3,25 +3,43 @@
 import { useState, useEffect } from "react";
 import { v4 as uuid4 } from "uuid";
 import ExpenseForm from "./components/ExpenseForm";
-import ExpenseChart from "./components/ExpenseChart";
 import ExpenseList from "./components/ExpenseList";
 import { Expense } from "./types/expense";
 import ExpenseFilter from "./components/ExpenseFilter";
-import { filterProps } from "framer-motion";
 
 export default function HomePage() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [filterCategory, setFilterCategory] = useState("");
-  // const [filterDate, setFilterDate] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [sortBy, setSortBy] = useState<"date" | "amount" | "">("");
   const categories = ["Music", "Movie", "Animal"];
 
   useEffect(() => {
-    const stored = localStorage.getItem("expenses");
-    if (stored) setExpenses(JSON.parse(stored));
+    const storedExpenses = localStorage.getItem("expenses");
+    const storedFilters = localStorage.getItem("filters");
+
+    if (storedExpenses) setExpenses(JSON.parse(storedExpenses));
+
+    if (storedFilters) {
+      const { category, start, end, sort } = JSON.parse(storedFilters);
+      setFilterCategory(category || "");
+      setStartDate(start || "");
+      setEndDate(end || "");
+      setSortBy(sort || "");
+    }
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("filters", 
+      JSON.stringify({
+        category: filterCategory,
+        start: startDate,
+        end: endDate,
+        sort: sortBy,
+      })
+    );
+  }, [filterCategory, startDate, endDate, sortBy]);
 
   const addExpense = (
     title: string,
@@ -92,7 +110,6 @@ export default function HomePage() {
           <option value="amount">Sort by Amount</option>
         </select>
       </div>
-      {/* <ExpenseChart></ExpenseChart> */}
       <ExpenseList expenses={displayedExpenses} onDelete={deleteExpense} />
     </div>
   );
