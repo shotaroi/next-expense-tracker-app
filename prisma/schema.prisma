@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  output   = "../src/generated/client"
 }
 
 datasource db {
@@ -15,10 +15,12 @@ datasource db {
 }
 
 model Expense {
-  id String @id @default(cuid())
-  title String
-  amount Float
-  category String
-  date DateTime
+  id        String   @id @default(uuid())
+  title     String
+  amount    Float
+  category  String
+  date      DateTime
   createdAt DateTime @default(now())
 }
+
+

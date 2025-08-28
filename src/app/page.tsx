@@ -16,18 +16,14 @@ export default function HomePage() {
   const categories = ["Music", "Movie", "Animal"];
 
   useEffect(() => {
-    const storedExpenses = localStorage.getItem("expenses");
-    const storedFilters = localStorage.getItem("filters");
-
-    if (storedExpenses) setExpenses(JSON.parse(storedExpenses));
-
-    if (storedFilters) {
-      const { category, start, end, sort } = JSON.parse(storedFilters);
-      setFilterCategory(category || "");
-      setStartDate(start || "");
-      setEndDate(end || "");
-      setSortBy(sort || "");
+    const fetchExpenses = async () => {
+      const res = await fetch("/api/expenses");
+      if (res.ok) {
+        const data = await res.json();
+        setExpenses(data);
+      }
     }
+    fetchExpenses();
   }, []);
 
   useEffect(() => {
@@ -41,22 +37,28 @@ export default function HomePage() {
     );
   }, [filterCategory, startDate, endDate, sortBy]);
 
-  const addExpense = (
+  const addExpense = async (
     title: string,
     amount: number,
     category: string,
     date: string
   ) => {
-    const newExpense: Expense = { id: uuid4(), title, amount, category, date };
-    const updated = [newExpense, ...expenses];
-    setExpenses(updated);
-    localStorage.setItem("expenses", JSON.stringify(updated));
+    const res = await fetch("/api/expenses", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({title, amount, category, date}),
+    });
+    if (res.ok) {
+      const newExpenses = await res.json();
+      setExpenses([newExpenses, ...expenses]);
+    }
   };
 
-  const deleteExpense = (id: string) => {
-    const updated = expenses.filter((exp) => exp.id !== id);
-    setExpenses(updated);
-    localStorage.setItem("expenses", JSON.stringify(updated));
+  const deleteExpense = async (id: string) => {
+    const res = await fetch("/api/expenses/${id}", {method: "DELETE"});
+    if (res.ok) {
+      setExpenses(expenses.filter((exp) => exp.id !== id));
+    }
   };
 
   const clearFilters = () => {
