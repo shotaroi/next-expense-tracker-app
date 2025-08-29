@@ -1,74 +1,68 @@
-import { option } from "framer-motion/client";
+"use client";
+
 import { useState } from "react";
 
 interface ExpenseFormProps {
-  onAdd: (
-    title: string,
-    amount: number,
-    category: string,
-    date: string
-  ) => void;
-  categories: string[];
+  expenseId?: string;
+  initialTitle?: string;
+  initialAmount?: number;
+  initialCategory?: string;
+  initialDate?: string;
+  onSuccess?: () => void;
 }
 
-export default function ExpenseForm({ onAdd, categories }: ExpenseFormProps) {
-  const [title, setTitle] = useState("");
-  const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("");
-  const [date, setDate] = useState("");
+export default function ExpenseForm({
+  expenseId,
+  initialTitle = "",
+  initialAmount = 0,
+  initialCategory = "",
+  initialDate = "",
+  onSuccess,
+}: ExpenseFormProps) {
+  const [title, setTitle] = useState(initialTitle);
+  const [amount, setAmount] = useState(initialAmount);
+  const [category, setCategory] = useState(initialCategory);
+  const [date, setDate] = useState(initialDate);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !amount || !category || !date) return;
 
-    onAdd(title, parseFloat(amount), category, date);
+    const payload = { title, amount, category, date };
 
-    setTitle("");
-    setAmount("");
-    setCategory("");
-    setDate("");
+    try {
+      if (expenseId) {
+        await fetch("/api/expenses", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...payload, id: expenseId }),
+        });
+      } else {
+        await fetch("/api/expenses", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
+
+      if (onSuccess) onSuccess();
+      setTitle("");
+      setAmount(0);
+      setCategory("");
+      setDate("");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="grid grid-cols-1 gap-2 sm:grid-cols-4 sm:gap-4 mb-4"
-    >
-      <input
-        type="text"
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        className="border rounded px-2 py-1"
-      />
-      <input
-        type="number"
-        placeholder="Amount"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        className="border rounded px-2 py-1"
-      />
-      <select value={category} onChange={(e) => setCategory(e.target.value)}>
-        <option value="">
-            Select Category
-        </option>
-        {categories.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
-        ))}
-      </select>
-      <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-        className="border rounded px-2 py-1"
-      />
-
-      <button
-        type="submit"
-        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded col-span-full sm:col-span-1"
-      >
-        Add
+    <form onSubmit={handleSubmit} className="space-y-2 mb-4" >
+      <input type="text" placeholder="Title" value={title} onChange={e => setTitle(e.target.value)} className="px-2 py-1 border rounded w-full" />
+      <input type="number" placeholder="Amount" value={amount} onChange={e => setAmount(Number(e.target.value))} className="px-2 py-1 border rounded w-full" />
+      <input type="text" placeholder="Category" value={category} onChange={e => setCategory(e.target.value)} className="px-2 py-1 border rounded w-full" />
+      <input type="date" value={date} onChange={e => setDate(e.target.value)} className="px-2 py-1 border rounded w-full" />
+      <button type="submit" className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600" >
+        {expenseId ? "Update Expense" : "Add Expense"}
       </button>
     </form>
-  );
+  )
 }
