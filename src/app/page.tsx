@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Expense } from "@/src/app/types/expense";
-import { p } from "framer-motion/client";
+// import type { Expense } from "@/src/app/types/expense";
+import { Expense } from "@prisma/client";
 
 export default function ExpensePage() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchExpense = async () => {
     try {
@@ -16,6 +17,8 @@ export default function ExpensePage() {
       setExpenses(data);
     } catch (error) {
       console.error("Error fetching expenses:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -23,24 +26,27 @@ export default function ExpensePage() {
     fetchExpense();
   }, []);
 
+  if (loading) return <p>Loading...</p>;
+
   return (
-    <div className="p-4">
+    <div className="max-w-2xl mx-auto p-4">
       <h1 className="text-xl font-bold mb-4">Expenses</h1>
       {expenses.length === 0 ? (
         <p>No expenses yet</p>
       ) : (
-        <ul>
+        <ul className="space-y-2">
           {expenses.map((exp) => (
-            <li key={exp.id}>
-              {exp.title} - ${exp.amount} ({exp.category})
-              {new Date(exp.date).toLocaleDateString()}
+            <li key={exp.id} className="flex justify-between items-center border p-2 rounded">
+              <span>
+                {exp.title} - {exp.category}
+              </span>
+              <span>
+                ${exp.amount} on {new Date(exp.date).toLocaleDateString()}
+              </span>
             </li>
           ))}
         </ul>
-      ) 
-      }
+      )}
     </div>
-  )
-
-
+  );
 }
