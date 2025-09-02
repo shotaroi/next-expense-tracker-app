@@ -39,7 +39,7 @@ export default function ExpensePage() {
     try {
       const res = await fetch("/api/expenses", {
         method: "POST",
-        headers: {"Content-type": "application/json"},
+        headers: { "Content-type": "application/json" },
         body: JSON.stringify(newExpense),
       });
 
@@ -53,9 +53,22 @@ export default function ExpensePage() {
       setAmount("");
       setCategory("");
       setDate("");
-
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    console.log(id);
+    const res = await fetch(`/api/expenses/${id}`, {method: "DELETE"});
+    const data = await res.json();
+    console.log("Response from API:", data); 
+
+    if (data.success) {
+      console.log("success");
+      setExpenses((prev) => prev.filter((exp) => exp.id !== id));
+    } else {
+      console.log("error");
     }
   };
 
@@ -65,13 +78,14 @@ export default function ExpensePage() {
     <div className="max-w-2xl mx-auto p-4">
       <h1 className="text-xl font-bold mb-4">Expenses</h1>
 
-      <form onSubmit={handleSubmit} className="mb-6 space-y-2" >
+      <form onSubmit={handleSubmit} className="mb-6 space-y-2">
         <input
           type="text"
           placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="p-2 border rounded w-full"
+          required
         />
         <input
           type="number"
@@ -80,6 +94,7 @@ export default function ExpensePage() {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           className="p-2 border rounded w-full"
+          required
         />
         <input
           type="text"
@@ -87,17 +102,18 @@ export default function ExpensePage() {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           className="p-2 border rounded w-full"
+          required
         />
         <input
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
           className="p-2 border rounded w-full"
+          required
         />
         <button type="submit" className="bg-blue-500 px-2 py-1 rounded">
           Add Expense
         </button>
-
       </form>
 
       {expenses.length === 0 ? (
@@ -107,7 +123,7 @@ export default function ExpensePage() {
           {expenses.map((exp) => (
             <li
               key={exp.id}
-              className="flex justify-between items-center border p-2 rounded"
+              className="flex justify-between border p-2 rounded"
             >
               <span>
                 {exp.title} - {exp.category}
@@ -115,6 +131,9 @@ export default function ExpensePage() {
               <span>
                 ${exp.amount} on {new Date(exp.date).toLocaleDateString()}
               </span>
+              <button onClick={() => handleDelete(exp.id)} className="bg-red-500 rounded px-2 py-1 hover:bg-red-600 ml-2">
+                Delete
+              </button>
             </li>
           ))}
         </ul>
