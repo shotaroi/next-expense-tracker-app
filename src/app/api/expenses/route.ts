@@ -39,25 +39,6 @@ export async function POST(req: Request) {
   }
 }
 
-export async function PUT(req: Request) {
-    try {
-        const {id, title, amount, category, date} = await req.json();
 
-        const updatedExpense = await prisma.expense.update({
-            where: {id},
-            data: {
-                title,
-                amount: parseFloat(amount),
-                category,
-                date: new Date(date),
-            },
-        });
-
-        return NextResponse.json(updatedExpense);
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({error: "Failed to update expense"}, {status: 500});
-    }
-}
 
 
