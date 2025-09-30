@@ -87,7 +87,7 @@ export default function ExpensePage() {
     const min = filters.min ? parseFloat(filters.min) : null;
     const max = filters.max ? parseFloat(filters.max) : null;
 
-    let out = expenses.filter((e) => {
+    const out = expenses.filter((e) => {
       const titleOk = q ? e.title.toLowerCase().includes(q) : true;
       const catOk = filters.category ? e.category === filters.category : true;
 
