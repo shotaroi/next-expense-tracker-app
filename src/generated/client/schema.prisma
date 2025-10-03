@@ -21,4 +21,72 @@ model Expense {
   category  String
   date      DateTime
   createdAt DateTime @default(now())
+
+  // Owner
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String?
+  email        String   @unique
+  passwordHash String
+  image        String?
+  createdAt    DateTime @default(now())
+
+  expenses Expense[]
+
+  // next-auth relations
+  accounts Account[]
+  sessions Session[]
+}
+
+// NextAuth models (keep even if only credentials for now)
+// The Account model stores linked provider accounts for a user. It holds OAuth tokens and IDs so NextAuth can handle login/logout, refresh, and link multiple providers to a single User.
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  // OAuth 2.0 token fields
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  // For Oauth 1.0 providers (like Twitter API v1). Not always used.
+  oauth_token_secret String?
+  oauth_token        String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  // Ensures uniqueness: a user can't have two identical Google IDs in the table. But the same user can have both a Google account and a GitHub account.
+  @@unique([provider, providerAccountId])
+}
+
+// Part of the NextAuth schema. It's how NextAuth stores active login sessions in your database when you use the "databse sessions" strategy (instead of only JWT).
+model Session {
+  id           String   @id @default(cuid())
+  // Actual token saved in the browser (usually as a cookie).
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+// Used by email-based flows in NextAuth (e.g., the Email provider/passwordless "magic link", and some verification/chage-email flows).
+model VerificationToken {
+  // Who the token is for.
+  identifier String
+  // The single-use secret sent to the user (usually via email link).
+  token      String   @unique
+  expires    DateTime
+
+  @@id([identifier, token])
 }
