@@ -5,7 +5,6 @@
 import {useState} from "react";
 import {signIn} from "next-auth/react";
 import {useRouter} from "next/navigation";
-import { main, p } from "framer-motion/client";
 
 export default function LoginPage() {
     const [mode, setMode] = useState<"login" | "signup">("login");
@@ -45,32 +44,32 @@ export default function LoginPage() {
     };
 
     return (
-        <main>
-            <h1>{mode === "login" ? "Log in" : "Sing up"}</h1>
+        <main className="max-w-sm mx-auto p-6">
+            <h1 className="text-2xl font-bold mb-4">{mode === "login" ? "Log in" : "Sing up"}</h1>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="space-y-3 border rounded p-4">
                 {mode === "signup" && (
-                    <div className="">
-                        <label>Name</label>
-                        <input value={name} onChange={(e) => setName(e.target.value)} />
+                    <div>
+                        <label className="block text-sm font-medium">Name</label>
+                        <input value={name} onChange={(e) => setName(e.target.value)} className="w-full border rounded px-2 py-1" />
                     </div>
                 )}
                 <div>
-                    <label>Email</label>
-                    <input type="email" />
+                    <label className="block text-sm font-medium">Email</label>
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border rounded px-2 py-1" />
                 </div>
                 <div>
-                    <label>Password</label>
-                    <input type="password" />
+                    <label className="block text-sm font-medium">Password</label>
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border rounded px-2 py-1" />
                 </div>
 
-                <button>
+                <button className="w-full bg-blue-600 rounded text-white hover:bg-blue-700 py-2">
                     {mode === "login" ? "Log in" : "Create account"}
                 </button>
 
-                {error && <p>{error}</p>}
+                {error && <p className="text-red-600 text-sm">{error}</p>}
 
-                <button>
+                <button type="button" onClick={() => setMode((m) => (m === "login" ? "signup" : "login"))} className="text-sm text-blue-600 hover:underline" >
                     {mode === "login" ? "No account? Sign up" : "Have an account? Log in"}
                 </button>
             </form>
