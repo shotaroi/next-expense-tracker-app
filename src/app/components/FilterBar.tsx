@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import type { Expense } from "@/src/app/types/expense";
+import type { Expense } from "../types/expense";
 
 export type FilterState = {
   q: string;                 // search query (title)

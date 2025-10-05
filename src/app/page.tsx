@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import ExpenseForm from "@/src/app/components/ExpenseForm";
-import type { Expense } from "@/src/app/types/expense";
+import ExpenseForm from "./components/ExpenseForm";
+import type { Expense } from "./types/expense";
 import Link from "next/link";
 import FilterBar, {FilterState} from "./components/FilterBar";
 

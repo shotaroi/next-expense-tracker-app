@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import {getServerSession} from "next-auth";
-import {authOptions} from "@/src/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth/options";
 
 type Params = {
   params: { id: string };
@@ -84,7 +84,7 @@ export async function PATCH(_req: Request, context: {params: Promise<{id: string
             },
         });
         console.log("Expense updated: ", updatedExpense);
-        
+
         return NextResponse.json(updatedExpense);
     } catch (error) {
         if (
