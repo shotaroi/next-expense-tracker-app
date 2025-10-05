@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { Expense } from "@/src/app/types/expense";
+import type { Expense } from "../types/expense";
 
 type ExpenseFormProps = {
   onCreate: (expense: Omit<Expense, "id">) => void | Promise<void>;
