@@ -1,98 +1,90 @@
-import { prisma } from "@/lib/prisma";
+import { ExpertisesUser } from "./../../../../../node_modules/next-auth/providers/42-school.d";
 import { NextResponse } from "next/server";
-import { Prisma } from "@prisma/client";
-import {getServerSession} from "next-auth";
+import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 
-type Params = {
-  params: { id: string };
-};
+// If credentials + Prisma are used, keep auth on Node runtime
+export const runtime = "nodejs";
 
-export async function DELETE(_req: Request, context: Params) {
-//   console.log("DELETE route hit");
-//   console.log("DELETE context: ", context);
+// GET/api/expenses/[id]
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> } // inline type, Promise to allow awaiting
+) {
+  const { id } = await params;
+  const session = await getServerSession(authOptions);
 
-  const {id} = await context.params;
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) return NextResponse.json({error: "Unauthorized"}, {status: 401});
-
-    await prisma.expense.delete({ where: { id, userId: session.user.id } }); // ensures ownership
-
-    return NextResponse.json({ message: "Deleted sucessfully" });
-  } catch (error) {
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
-      return NextResponse.json({ error: "Expense not found" }, { status: 404 });
-    }
-
-    return NextResponse.json(
-      { error: "Something went wrong" },
-      { status: 500 }
-    );
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const expense = await prisma.expense.findFirst({
+    where: { id, userId: session.user.id },
+  });
+
+  if (!expense) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(expense);
 }
 
-export async function GET(_req: Request, context: {params: Promise<{id: string}>}) {
-    const {id} = await context.params;
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) return NextResponse.json({error: "Unauthorized"}, {status: 401});
-    console.log("GET request for expense id:", id)
+// PATCH/api/expenses/[id]
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const session = await getServerSession(authOptions);
 
-  try {
-    const expense = await prisma.expense.findUnique({
-      where: { id, userId: session.user.id },
-    });
-    if (!expense) {
-      return NextResponse.json({ error: "Expense not found" }, { status: 404 });
-    }
-    return NextResponse.json(expense);
-  } catch (error) {
-    console.error("GET error:", error);
-    return NextResponse.json(
-      { error: "Something went wrong" },
-      { status: 500 }
-    );
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  // Ensure the record belongs to the user
+  const existing = await prisma.expense.findFirst({
+    where: { id, userId: session.user.id },
+  });
+
+  if (!existing) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  const body = await req.json();
+  const updated = await prisma.expense.update({
+    where: { id },
+    data: {
+      title: body.title ?? existing.title,
+      amount: body.amount !== undefined ? Number(body.amount) : existing.amount,
+      category: body.category ?? existing.category,
+      date: body.date ? new Date(body.date) : existing.date,
+    },
+  });
+
+  return NextResponse.json(updated);
 }
 
-export async function PATCH(_req: Request, context: {params: Promise<{id: string}>}) {
-    const {id} = await context.params;
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) return NextResponse.json({error: "Unauthorized"}, {status: 401});
-    console.log("PATCH request for id: ", id);
+// DELETE/api/expenses/[id]
+export async function DELETE(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const session = await getServerSession(authOptions);
 
-    try {
-        const data = await _req.json();
-        const {title, amount, category, date} = data;
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-        // ensure user owns this expense
-        const exp = await prisma.expense.findFirst({
-          where: {id, userId: session.user.id},
-        });
-        if (!exp) return NextResponse.json({error: "Not found"}, {status: 404});
+  // Ensure ownership, then delete
+  const existing = await prisma.expense.findFirst({
+    where: { id, userId: session.user.id },
+  });
+  if (!existing) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
 
-        const updatedExpense = await prisma.expense.update({
-            where: {id},
-            data: {
-                title, 
-                amount: Number(amount),
-                category,
-                date: date ? new Date(date) : undefined,
-            },
-        });
-        console.log("Expense updated: ", updatedExpense);
-
-        return NextResponse.json(updatedExpense);
-    } catch (error) {
-        if (
-            error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P205"
-        ) {
-            return NextResponse.json({error: "Expense not found"}, {status: 404});
-        }
-        console.error("PATCH error: ", error);
-        return NextResponse.json({error: "Something went wrong"}, {status: 500});
-    }
+  await prisma.expense.delete({ where: { id } });
+  return NextResponse.json({ ok: true });
 }
