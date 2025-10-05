@@ -1,4 +1,3 @@
-import { ExpertisesUser } from "./../../../../../node_modules/next-auth/providers/42-school.d";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
