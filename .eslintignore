@@ -1,0 +1,3 @@
+# Ignore Prisma’s generated client code
+src/generated/
+src/generated/
