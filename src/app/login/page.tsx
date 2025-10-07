@@ -1,78 +1,51 @@
-// Login page UI
-
 "use client";
 
-import {useState} from "react";
-import {signIn} from "next-auth/react";
-import {useRouter} from "next/navigation";
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
 
 export default function LoginPage() {
-    const [mode, setMode] = useState<"login" | "signup">("login");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [name, setName] = useState("");
-    const [error, setError] = useState<string | null>(null);
-    const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError(null);
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
 
-        if (mode === "signup") {
-            const res = await fetch("/api/signup", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({email, password, name}),
-            });
-            if (!res.ok) {
-                const data = await res.json();
-                setError(data.error || "Sign up failed");
-                return
-            }
-            // fall through to login after signup
-        }
+    await signIn("credentials", {
+      email,
+      password,
+      redirect: true, // NextAuth handles navigation
+      callbackUrl: "/", // where to land after login
+    });
+  }
 
-        const result = await signIn("credentials", {
-            email, password, redirect: true, callbackUrl: "/"
-        });
+  return (
+    <main className="max-w-sm mx-auto p-6">
+      <form onSubmit={onSubmit} className="space-y-3 border rounded p-4">
+        <h1 className="text-xl font-bold">Sign in</h1>
 
-        if (result?.error) {
-            setError("Invalid email or password");
-        } else {
-            router.replace("/"); // go to main app
-        }
-    };
+        <label className="block text-sm">
+            <span className="mb-1 block"> Email</span>
+            <input type="email" className="border rounded w-full px-2 py-1" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        </label>
+   
+        <label className="block text-sm">
+            <span className="mb-1 block">Password</span>
+            <input type="password" className="border rounded w-full px-2 py-1" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        </label>
 
-    return (
-        <main className="max-w-sm mx-auto p-6">
-            <h1 className="text-2xl font-bold mb-4">{mode === "login" ? "Log in" : "Sing up"}</h1>
+        <button type="submit" disabled={loading} className="w-full rounded bg-blue-600 text-white py-2 disabled:opacity-50">
+            {loading ? "Signing in..." : "Sign in"}
+        </button>
 
-            <form onSubmit={handleSubmit} className="space-y-3 border rounded p-4">
-                {mode === "signup" && (
-                    <div>
-                        <label className="block text-sm font-medium">Name</label>
-                        <input value={name} onChange={(e) => setName(e.target.value)} className="w-full border rounded px-2 py-1" />
-                    </div>
-                )}
-                <div>
-                    <label className="block text-sm font-medium">Email</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border rounded px-2 py-1" />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium">Password</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border rounded px-2 py-1" />
-                </div>
+        <p className="text-sm text-gray-600">
+            Don&apos;t have an account?{" "}
+            <Link href={"/signup"} className="text-blue-600 hover:underline">Sign up</Link>
+        </p>
+      </form>
+    </main>
 
-                <button className="w-full bg-blue-600 rounded text-white hover:bg-blue-700 py-2">
-                    {mode === "login" ? "Log in" : "Create account"}
-                </button>
-
-                {error && <p className="text-red-600 text-sm">{error}</p>}
-
-                <button type="button" onClick={() => setMode((m) => (m === "login" ? "signup" : "login"))} className="text-sm text-blue-600 hover:underline" >
-                    {mode === "login" ? "No account? Sign up" : "Have an account? Log in"}
-                </button>
-            </form>
-        </main>
-    )
+  );
 }
