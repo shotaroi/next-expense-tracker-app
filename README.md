@@ -3,6 +3,8 @@
 A full-stack **Expense Tracker** built with **Next.js 14 (App Router)**, **Prisma**, and **NextAuth** for authentication.
 It lets users **sign up, log in, add, edit, delete, and analyze expenses** with secure, persistent storage powered by **PostgreSQL (Neon)**.
 
+https://next-expense-tracker-app.vercel.app/
+
 ![Next.js + Prisma + NextAuth](https://skillicons.dev/icons?i=nextjs,ts,prisma,postgres,vercel)
 
 ---
