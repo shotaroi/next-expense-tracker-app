@@ -46,7 +46,7 @@ export default function SignupPage() {
     };
 
     return (
-        <main className="min-h-screen flex items-center justify-center p-6">
+        <main className="max-w-sm mx-auto p-6">
             <form onSubmit={onSubmit}>
                 <h1 className="text-xl font-bold">Create your account</h1>
 
