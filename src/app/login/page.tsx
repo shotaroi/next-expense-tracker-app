@@ -22,7 +22,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="max-w-sm mx-auto p-6">
+    <main className="min-h-screen flex items-center justify-center p-6">
       <form onSubmit={onSubmit} className="space-y-3 border rounded p-4">
         <h1 className="text-xl font-bold">Sign in</h1>
 
