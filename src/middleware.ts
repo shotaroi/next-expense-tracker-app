@@ -5,5 +5,5 @@ export { default } from "next-auth/middleware";
 
 export const config = {
   // matcher defines which routes this middleware applies to
-  matcher: ["/((?!login|signup|api/auth|_next/static|_next/image|favicon.ico).*)", "/analytics", "/api/expenses/:path*"], // protect these routes
+  matcher: ["/((?!login|signup|api/signup|api/auth|_next/static|_next/image|favicon.ico).*)", "/analytics", "/api/expenses/:path*"], // protect these routes
 };
