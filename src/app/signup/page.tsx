@@ -28,7 +28,7 @@ export default function SignupPage() {
                 throw new Error(data.error || "Failed to sign up");
             }
 
-            // Auto-login after successful signup
+            // Auto-login after successful signup.
             const result = await signIn("credentials", {
                 redirect: true,
                 email,
