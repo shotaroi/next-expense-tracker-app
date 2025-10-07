@@ -1,4 +1,4 @@
-export const runtime = "node.js";  // ensure node, not edge
+export const runtime = "nodejs";  // ensure node, not edge
 // Helper from Next.js App Router to send JSON/HTTP responses.
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
