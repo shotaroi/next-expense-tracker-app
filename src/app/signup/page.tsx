@@ -60,7 +60,7 @@ export default function SignupPage() {
                     <input className="border rounded w-full px-2 py-1" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@example.com" />
                 </label>
 
-                <label className="block text-sm mb-1">
+                <label className="block text-sm mb-3">
                     <span className="mb-1 block">Password</span>
                     <input className="border rounded w-full px-2 py-1" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} placeholder="••••••••" />
                 </label>
