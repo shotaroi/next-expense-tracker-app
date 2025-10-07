@@ -33,7 +33,7 @@ export default function LoginPage() {
         }
 
         const result = await signIn("credentials", {
-            email, password, redirect: false,
+            email, password, redirect: true, callbackUrl: "/"
         });
 
         if (result?.error) {
