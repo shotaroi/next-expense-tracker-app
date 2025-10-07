@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💰 Next Expense Tracker App
 
-## Getting Started
+A full-stack **Expense Tracker** built with **Next.js 14 (App Router)**, **Prisma**, and **NextAuth** for authentication.
+It lets users **sign up, log in, add, edit, delete, and analyze expenses** with secure, persistent storage powered by **PostgreSQL (Neon)**.
 
-First, run the development server:
+![Next.js + Prisma + NextAuth](https://skillicons.dev/icons?i=nextjs,ts,prisma,postgres,vercel)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+✅ **Authentication**
+- Secure sign-up and login with hashed passwords via NextAuth + Prisma Adapter
+- Session management using JWTs
+- Middleware to protect private routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+✅ **Expense Management**
+- Create, read, update, and delete (CRUD) expenses
+- Linked to the authenticated user
+- Real-time updates on the client side
 
-## Learn More
+✅ **Analytics Dashbord**
+- Visualized spending breakdown by category (using Recharts)
+- Total monthly expenses summary
 
-To learn more about Next.js, take a look at the following resources:
+✅ **Clean UI**
+- Built wiht Tailwind CSS for a clean, responsive layout
+- Simple and intuitive form handling with React hooks
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+✅ **Deployed & Scalable**
+- Fully serverless on **Vercel**
+- Database hosted on **Neon (PostgreSQL)**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+##🧩 Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Layer | Tools |
+|-------|-------|
+| Frontend | Next.js 14 (App Router), TypeScript, Tailwind CSS |
+| Backend | Next.js API Routes, Prisma ORM |
+| Auth | NextAuth.js with Credentials Provider |
+| Database | PostgreSQL (Neon) |
+| Deployment | Vercel |
+| Charts | Recharts |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🗂️ Project Structure 
+
+```plaintext
+src/
+├── app/
+│   ├── api/
+│   │   ├── auth/
+│   │   │   └── [...nextauth]/
+│   │   │       └── route.ts           # NextAuth configuration
+│   │   ├── expenses/
+│   │   │   ├── route.ts               # GET/POST expense APIs
+│   │   │   └── [id]/route.ts          # DELETE/PATCH expense APIs
+│   │   └── signup/
+│   │       └── route.ts               # User registration API
+│   │
+│   ├── analytics/
+│   │   └── page.tsx                   # Charts & insights dashboard
+│   │
+│   ├── login/
+│   │   └── page.tsx                   # Login page
+│   │
+│   ├── signup/
+│   │   └── page.tsx                   # Signup page
+│   │
+│   ├── page.tsx                       # Main Expense Tracker UI
+│   └── layout.tsx                     # Root layout with session provider
+│
+├── components/
+│   └── ExpenseForm.tsx                # Expense creation/edit form
+│
+├── lib/
+│   ├── prisma.ts                      # Prisma client instance
+│   └── auth/
+│       └── options.ts                 # NextAuth options
+│
+├── types/
+│   └── expense.ts                     # Shared Expense type definition
+│
+├── middleware.ts                      # Auth route protection middleware
+└── prisma/
+    └── schema.prisma                  # Prisma schema for models
