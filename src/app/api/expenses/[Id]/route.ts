@@ -41,7 +41,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Ensure the record belongs to the user
+  // Ensure the record belongs to the user.
   const existing = await prisma.expense.findFirst({
     where: { id, userId: session.user.id },
   });
