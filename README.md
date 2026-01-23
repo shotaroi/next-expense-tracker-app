@@ -1,4 +1,4 @@
-# 💰 Next Expense Tracker App
+# Next Expense Tracker App
 
 A full-stack **Expense Tracker** built with **Next.js 14 (App Router)**, **Prisma**, and **NextAuth** for authentication.
 It lets users **sign up, log in, add, edit, delete, and analyze expenses** with secure, persistent storage powered by **PostgreSQL (Neon)**.
@@ -9,33 +9,32 @@ https://next-expense-tracker-app.vercel.app/
 
 ---
 
-## 🚀 Features
-
-✅ **Authentication**
+## Features
+ **Authentication**
 - Secure sign-up and login with hashed passwords via NextAuth + Prisma Adapter
 - Session management using JWTs
 - Middleware to protect private routes
 
-✅ **Expense Management**
+ **Expense Management**
 - Create, read, update, and delete (CRUD) expenses
 - Linked to the authenticated user
 - Real-time updates on the client side
 
-✅ **Analytics Dashbord**
+ **Analytics Dashbord**
 - Visualized spending breakdown by category (using Recharts)
 - Total monthly expenses summary
 
-✅ **Clean UI**
+ **Clean UI**
 - Built wiht Tailwind CSS for a clean, responsive layout
 - Simple and intuitive form handling with React hooks
 
-✅ **Deployed & Scalable**
+ **Deployed & Scalable**
 - Fully serverless on **Vercel**
 - Database hosted on **Neon (PostgreSQL)**
 
 ---
 
-##🧩 Tech Stack
+## Tech Stack
 
 | Layer | Tools |
 |-------|-------|
@@ -48,7 +47,7 @@ https://next-expense-tracker-app.vercel.app/
 
 ---
 
-## 🗂️ Project Structure 
+## Project Structure 
 
 ```plaintext
 src/
